@@ -22,21 +22,31 @@ import (
 // Controller implementation
 type EchoController struct{}
 
-func (c *EchoController) Echo(req *buddy.Request) {
+func (c *EchoController) Echo(req *buddy.Request, res *buddy.Responder) {
 	fmt.Println("I'm in the Echo method!")
 
-	// respond here once the responder is implemented!
+	res.Broadcast <- []byte([]byte(fmt.Sprintf("%v",req.Origin)))
 }
 
-func (c *EchoController) PrintParams(req *buddy.Request) {
+func (c *EchoController) PrintParams(req *buddy.Request, res *buddy.Responder) {
 	fmt.Println(req.Params)
+}
+
+type EchoStreamController struct {
+	count int
+}
+
+func (c *EchoStreamController) EchoStreamer(req *buddy.Request, res *buddy.Responder) {
+	fmt.Println(c.count)
+	c.count += 1
 }
 
 func main() {
 
 	// Register endpoints here in the form of endpoint, controller, method
-	buddy.Add("echo", EchoController{}, "Echo")
-	buddy.Add("print_params", EchoController{}, "PrintParams")
+	buddy.Add("echo", EchoController{}, "Echo", false)
+	buddy.Add("print_params", EchoController{}, "PrintParams", false)
+	buddy.Add("echo_streamer", EchoController{}, "EchoStreamer", true)
 
 	// Run the server and serve traffic
 	buddy.Run()
