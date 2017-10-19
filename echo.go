@@ -8,14 +8,24 @@ import (
 /*
   Requests are in the form of
 
-  {
-			"session_token: "de0u21ejdd12d",
-			"endpoint": "test",
-      "params": {
-          "test1": "result1",
-          "test2": "result2"
-      }
-  }
+	{
+		"session_token": "KjIQhKUPNrvHkUHv1VySBg==",
+		"endpoint": "test_endpoint",
+		"origin": {
+			"longitude": 45.501689,
+			"latitude": -73.567256
+		},
+		"payload": {
+			"offset": {
+				"x": 3.2,
+				"y": 1.3,
+				"z": 4.0
+			},
+			"params": {
+				"foo": "bar"
+			}
+		}
+	}
 
 */
 
