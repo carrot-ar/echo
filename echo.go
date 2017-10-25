@@ -30,13 +30,64 @@ import (
 
 */
 
+type request struct {
+	SessionToken string  `json:"session_token"`
+	Endpoint     string  `json:"endpoint"`
+	Origin       Origin  `json:"origin"`
+	Payload      Payload `json:"payload"`
+}
+
+type Origin struct {
+	Longitude float64 `json:"longitude"`
+	Latitude  float64 `json:"latitude"`
+	Altitude  float64 `json:"altitude"`
+}
+
+type Payload struct {
+	Offset Offset            `json:"offset"`
+	Params map[string]string `json:"params"`
+}
+
+type Offset struct {
+	X float64 `json:"x"`
+	Y float64 `json:"y"`
+	Z float64 `json:"z"`
+}
+
 // Controller implementation
 type EchoController struct{}
 
 func (c *EchoController) Echo(req *carrot.Request, res *carrot.Broadcast) {
-	jsonData, err := json.Marshal(req)
-	fmt.Println(err)
-	res.Send([]byte([]byte(jsonData)))
+	responseData := request{
+		SessionToken: "badsessiontoken",
+		Endpoint:     "echo",
+		Origin: Origin{
+			Latitude:  req.Origin.Latitude,
+			Longitude: req.Origin.Longitude,
+			Altitude:  req.Origin.Altitude,
+		},
+		Payload: Payload{
+			Offset: Offset{
+				X: req.Offset.X,
+				Y: req.Offset.Y,
+				Z: req.Offset.Z,
+			},
+			Params: req.Params,
+		},
+	}
+
+
+	jsonData, err := json.Marshal(&responseData)
+	if err != nil {
+		fmt.Println("COULD NOT UNMARSHAL")
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println("JSON DATA BELOW!")
+	fmt.Println(string(jsonData))
+
+	res.Send(jsonData)
 }
 
 func (c *EchoController) PrintParams(req *carrot.Request, res *carrot.Broadcast) {
