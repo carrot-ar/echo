@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/carrot-ar/carrot"
 )
@@ -33,7 +34,9 @@ import (
 type EchoController struct{}
 
 func (c *EchoController) Echo(req *carrot.Request, res *carrot.Broadcast) {
-	res.Send([]byte([]byte(fmt.Sprintf("%v", req.Params["rick"]))))
+	jsonData, err := json.Marshal(req)
+	fmt.Println(err)
+	res.Send([]byte([]byte(jsonData)))
 }
 
 func (c *EchoController) PrintParams(req *carrot.Request, res *carrot.Broadcast) {

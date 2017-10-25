@@ -15,7 +15,7 @@ RUN cd /opt && wget https://storage.googleapis.com/golang/go${GOVERSION}.linux-a
     mkdir $GOPATH
 
 RUN go get github.com/gorilla/websocket
-RUN go get github.com/senior-buddy/buddy
+RUN go get github.com/carrot-ar/carrot
 RUN cd /root/.go/src/github.com/ && mkdir clandry94
 RUN cd /root/.go/src/github.com/clandry94/ && git clone https://github.com/clandry94/echo
 
