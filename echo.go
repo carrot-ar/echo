@@ -59,7 +59,7 @@ type EchoController struct{}
 
 func (c *EchoController) Echo(req *carrot.Request, res *carrot.Broadcast) {
 	responseData := request{
-		SessionToken: "badsessiontoken",
+		SessionToken: req.SessionToken,
 		Endpoint:     "echo",
 		Origin: Origin{
 			Latitude:  req.Origin.Latitude,
@@ -76,17 +76,12 @@ func (c *EchoController) Echo(req *carrot.Request, res *carrot.Broadcast) {
 		},
 	}
 
-
 	jsonData, err := json.Marshal(&responseData)
 	if err != nil {
 		fmt.Println("COULD NOT UNMARSHAL")
 		fmt.Println(err)
 		return
 	}
-
-	fmt.Println("JSON DATA BELOW!")
-	fmt.Println(string(jsonData))
-
 	res.Send(jsonData)
 }
 
