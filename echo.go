@@ -59,7 +59,7 @@ type EchoController struct{}
 
 func (c *EchoController) Echo(req *carrot.Request, res *carrot.Broadcast) {
 	responseData := request{
-		SessionToken: req.SessionToken,
+		SessionToken: string(req.SessionToken),
 		Endpoint:     "echo",
 		Origin: Origin{
 			Latitude:  req.Origin.Latitude,
