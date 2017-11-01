@@ -78,7 +78,6 @@ func (c *EchoController) Echo(req *carrot.Request, res *carrot.Broadcast) {
 
 	jsonData, err := json.Marshal(&responseData)
 	if err != nil {
-		fmt.Println("COULD NOT UNMARSHAL")
 		fmt.Println(err)
 		return
 	}
