@@ -28,34 +28,41 @@ import (
 // Controller implementation
 type EchoController struct{}
 
-func (c *EchoController) Echo(req *carrot.Request, br *carrot.Broadcast) {
-	res, err := carrot.CreateDefaultResponse(req)
+func (c *EchoController) EchoSimple(req *carrot.Request, br *carrot.Broadcast) {
+	message, err := carrot.CreateDefaultResponse(req)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	br.Broadcast(res)
+	br.Broadcast(message)
 }
 
-func (c *EchoController) PrintParams(req *carrot.Request, res *carrot.Broadcast) {
-	fmt.Println(req.Params)
-}
-
-type EchoStreamController struct {
-	count int
-}
-
-func (c *EchoStreamController) EchoStreamer(req *carrot.Request, res *carrot.Broadcast) {
-	fmt.Println(c.count)
-	c.count += 1
+func (c *EchoController) EchoExtendable(req *carrot.Request, br *carrot.Broadcast) {
+	token := string(req.SessionToken)
+	payload, err := carrot.NewPayload(token, nil, nil)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	res, err := carrot.NewResponse(token, "Echo", payload)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	res.AddParam("someKey", "someValue")
+	message, err := res.Build()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	br.Broadcast(message)
 }
 
 func main() {
 
 	// Register endpoints here in the form of endpoint, controller, method
-	carrot.Add("echo", EchoController{}, "Echo", true)
-	carrot.Add("print_params", EchoController{}, "PrintParams", false)
-	carrot.Add("echo_streamer", EchoController{}, "EchoStreamer", true)
+	carrot.Add("echo_simple", EchoController{}, "EchoSimple", true)
+	carrot.Add("echo_extendable", EchoController{}, "EchoExtendable", true)
 
 	// Run the server and serve traffic
 	carrot.Run()
