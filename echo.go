@@ -66,7 +66,7 @@ func main() {
 
 	// Register endpoints here in the form of endpoint, controller, method
 	carrot.Add("echoSimple", EchoController{}, "EchoSimple", true)
-	carrot.Add("echoExtensible", EchoController{}, "EchoExtendable", true)
+	carrot.Add("echoExtendable", EchoController{}, "EchoExtendable", true)
 	carrot.Add("print", EchoController{}, "Print", true)
 
 	// Run the server and serve traffic
