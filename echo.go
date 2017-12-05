@@ -28,34 +28,46 @@ import (
 // Controller implementation
 type EchoController struct{}
 
-func (c *EchoController) Echo(req *carrot.Request, br *carrot.Broadcast) {
-	res, err := carrot.CreateDefaultResponse(req)
+func (c *EchoController) EchoSimple(req *carrot.Request, br *carrot.Broadcast) {
+	message, err := carrot.CreateDefaultResponse(req)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	br.Broadcast(res)
+	br.Broadcast(message)
 }
 
-func (c *EchoController) PrintParams(req *carrot.Request, res *carrot.Broadcast) {
-	fmt.Println(req.Params)
+func (c *EchoController) EchoExtendable(req *carrot.Request, br *carrot.Broadcast) {
+	token := string(req.SessionToken)
+	payload, err := carrot.NewPayload(token, nil, nil)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	res, err := carrot.NewResponse(token, "Print", payload)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	res.AddParam("someKey", "someValue")
+	message, err := res.Build()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	br.Broadcast(message)
 }
 
-type EchoStreamController struct {
-	count int
-}
-
-func (c *EchoStreamController) EchoStreamer(req *carrot.Request, res *carrot.Broadcast) {
-	fmt.Println(c.count)
-	c.count += 1
+func (c *EchoController) Print(req *carrot.Request, br *carrot.Broadcast) {
+	fmt.Printf("The params are:\t%v\n", req.Params)
 }
 
 func main() {
 
 	// Register endpoints here in the form of endpoint, controller, method
-	carrot.Add("echo", EchoController{}, "Echo", true)
-	carrot.Add("print_params", EchoController{}, "PrintParams", false)
-	carrot.Add("echo_streamer", EchoController{}, "EchoStreamer", true)
+	carrot.Add("echoSimple", EchoController{}, "EchoSimple", true)
+	carrot.Add("echoExtensible", EchoController{}, "EchoExtendable", true)
+	carrot.Add("print", EchoController{}, "Print", true)
 
 	// Run the server and serve traffic
 	carrot.Run()
