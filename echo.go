@@ -44,7 +44,7 @@ func (c *EchoController) EchoExtendable(req *carrot.Request, br *carrot.Broadcas
 		fmt.Println(err)
 		return
 	}
-	res, err := carrot.NewResponse(token, "Print", payload)
+	res, err := carrot.NewResponse(token, "Echo", payload)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -58,16 +58,11 @@ func (c *EchoController) EchoExtendable(req *carrot.Request, br *carrot.Broadcas
 	br.Broadcast(message)
 }
 
-func (c *EchoController) Print(req *carrot.Request, br *carrot.Broadcast) {
-	fmt.Printf("The params are:\t%v\n", req.Params)
-}
-
 func main() {
 
 	// Register endpoints here in the form of endpoint, controller, method
-	carrot.Add("echoSimple", EchoController{}, "EchoSimple", true)
-	carrot.Add("echoExtendable", EchoController{}, "EchoExtendable", true)
-	carrot.Add("print", EchoController{}, "Print", true)
+	carrot.Add("echo_simple", EchoController{}, "EchoSimple", true)
+	carrot.Add("echo_extendable", EchoController{}, "EchoExtendable", true)
 
 	// Run the server and serve traffic
 	carrot.Run()
